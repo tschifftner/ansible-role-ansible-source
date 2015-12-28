@@ -8,9 +8,12 @@ galaxy_info:
   license: MIT
   min_ansible_version: 1.8
   platforms:
-    - name: EL
+  - name: Debian
     versions:
-      - all
+    - all
+  - name: Ubuntu
+    versions:
+    - all
   galaxy_tags:
     - debian
     - ansible
