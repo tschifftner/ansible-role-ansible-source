@@ -31,11 +31,17 @@ ansible_pip_install:
 
 None.
 
+## Installation
+
+```
+$ ansible-galaxy install tschifftner.ansible-source
+```
+
 ## Example Playbook
 
     - hosts: server
       roles:
-        - { role: tschifftner.ansible-role-ansible-source }
+        - { role: tschifftner.ansible-source }
 
 ## License
 
