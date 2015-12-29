@@ -34,3 +34,6 @@ script:
 
   # ansible-lint checks for best practice
   - ansible-lint tests/$SITE
+
+  # check ansible version
+  - if [ $(`which ansible` --version| `which cut` -d ' ' -f2) == '2.0.0' ]; then exit 0; else exit 1; fi
