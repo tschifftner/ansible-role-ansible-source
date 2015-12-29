@@ -40,8 +40,8 @@
   changed_when: false
 
 - name: 'Install ansible'
-  command:
-    cmd: make install
+  command: make install
+  args:
     chdir: "{{ ansible_install_dir }}"
   when: (ansible_git_version.stdout_lines is not defined or
          ansible_shell_version.stdout_lines is not defined or
