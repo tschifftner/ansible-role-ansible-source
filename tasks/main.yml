@@ -1,6 +1,6 @@
 ---
 - name: 'Install required packages'
-  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=3600
+  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=86400
   with_items: ansible_required_packages
 
 - name: 'Run pip install'
@@ -8,7 +8,12 @@
   with_items: ansible_pip_install
 
 - name: '/etc/ansible exists'
-  file: path=/etc/ansible state=directory owner=root group=root mode=0644
+  file:
+    path: "/etc/ansible"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0644"
 
 - name: 'Clone git repository'
   register: ansible_repo
@@ -20,6 +25,24 @@
     version: "{{ ansible_git_version }}"
     update: "no"
 
+- name: 'Get version from VERSION file'
+  shell: cat VERSION | cut -f1 -d' '
+  args:
+    chdir: "{{ ansible_install_dir }}"
+  register: ansible_git_version
+  ignore_errors: true
+  changed_when: false
+
+- name: 'Get ansible version'
+  shell: ansible --version| cut -d ' ' -f2
+  register: ansible_shell_version
+  ignore_errors: true
+  changed_when: false
+
 - name: 'Install ansible'
-  command: chdir={{ ansible_install_dir }} make install
-  when: (ansible_repo.changed is defined and ansible_repo.changed)
+  command:
+    cmd: make install
+    chdir: "{{ ansible_install_dir }}"
+  when: (ansible_git_version.stdout_lines is not defined or
+         ansible_shell_version.stdout_lines is not defined or
+         ansible_git_version.stdout_lines != ansible_shell_version.stdout_lines)
