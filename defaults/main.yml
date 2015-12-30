@@ -1,7 +1,19 @@
 ---
+# define source
+ansible_download_mode: "tar" # tar|git
+# download path
+ansible_download_dir: "/tmp"
+# folder within archive after extration
+ansible_download_archive_folder: "ansible-2.0.0-0.8.rc3"
+
+ansible_download_url: "https://github.com/ansible/ansible/archive/v2.0.0-0.8.rc3.tar.gz"
+
+# git version
 ansible_git_version: "stable-2.0" # This can be the full 40-character SHA-1 hash, the literal string HEAD, a branch name, or a tag name.
 ansible_repo_url: "https://github.com/ansible/ansible.git"
 ansible_install_dir: "/opt/ansible"
+
+# Required packages for running ansible
 ansible_required_packages:
   - "python-pip"
   - "python-dev"

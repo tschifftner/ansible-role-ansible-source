@@ -1,0 +1,26 @@
+---
+- name: 'Clone git repository'
+  register: ansible_repo
+  git:
+    accept_hostkey: "yes"
+    force: "yes"
+    repo: "{{ ansible_repo_url }}"
+    dest: "{{ ansible_install_dir }}"
+    version: "{{ ansible_git_version }}"
+    update: "no"
+
+- name: 'Get version from VERSION file'
+  shell: cat VERSION | cut -f1 -d' '
+  args:
+    chdir: "{{ ansible_install_dir }}"
+  register: ansible_install_version
+  #ignore_errors: true
+  changed_when: false
+
+- name: 'Install ansible'
+  command: make install
+  args:
+    chdir: "{{ ansible_install_dir }}"
+  when: (ansible_install_version.stdout_lines is not defined or
+         ansible_current_version.stdout_lines is not defined or
+         ansible_install_version.stdout_lines != ansible_current_version.stdout_lines)

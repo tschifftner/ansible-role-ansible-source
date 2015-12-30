@@ -1,10 +1,11 @@
 ---
 language: python
 python: "2.7"
-dist: trusty
+sudo: required
 
 env:
-  - SITE=test.yml
+  - SITE=test-tar.yml
+  - SITE=test-git.yml
 
 before_install:
   - sudo apt-get update -qq
@@ -12,6 +13,9 @@ before_install:
 install:
   # Install Ansible.
   - pip install ansible
+
+  # install older vesion for testing
+  #- "pip install --upgrade markupsafe jinja2 ansible==1.8.4"
 
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
