@@ -1,4 +1,10 @@
 ---
+- name: 'Get ansible version'
+  shell: ansible --version| cut -d ' ' -f2
+  register: ansible_current_version
+  ignore_errors: true
+  changed_when: false
+
 - name: 'Install required packages'
   apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=86400
   with_items: ansible_required_packages
@@ -15,28 +21,22 @@
     group: "root"
     mode: "0644"
 
-- name: 'Get ansible version'
+- name: 'Install from git repository'
+  include: 'git.yml'
+  when: ansible_download_mode == 'git'
+
+- name: 'Install from tar archive'
+  include: 'tar.yml'
+  when: ansible_download_mode == 'tar'
+
+- name: 'Update ansible version veriable'
   shell: ansible --version| cut -d ' ' -f2
   register: ansible_current_version
   ignore_errors: true
   changed_when: false
 
-- name: 'Include git tasks'
-  include: 'git.yml'
-  when: ansible_download_mode == 'git'
-
-- name: 'Include tar tasks'
-  include: 'tar.yml'
-  when: ansible_download_mode == 'tar'
-
-- name: 'Get ansible version'
-  shell: ansible --version| cut -d ' ' -f2
-  register: ansible_current_version
-  #ignore_errors: true
-  changed_when: false
+- debug:
+    msg: "{{ ansible_install_version.stdout_lines }} == {{ ansible_current_version.stdout_lines }}"
   failed_when: (ansible_install_version.stdout_lines is not defined or
                 ansible_current_version.stdout_lines is not defined or
                 ansible_install_version.stdout_lines != ansible_current_version.stdout_lines)
-
-- debug:
-    msg: "{{ ansible_install_version.stdout_lines }} == {{ ansible_current_version.stdout_lines }}"
