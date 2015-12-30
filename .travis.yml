@@ -1,6 +1,7 @@
 ---
 language: python
 python: "2.7"
+dist: trusty
 
 env:
   - SITE=test.yml
@@ -37,6 +38,6 @@ script:
 
   # check ansible version
   - >
-    [ $(ansible --version| cut -d ' ' -f2) == '1.9.4' ]
+    [ $(ansible --version| cut -d ' ' -f2) == '2.0.0' ]
     && (echo "Ansible version $(ansible --version| cut -d ' ' -f2): pass" && exit 0)
     || (echo "Ansible version $(ansible --version| cut -d ' ' -f2): fail" && exit 1)
