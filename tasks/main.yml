@@ -41,11 +41,11 @@
   when: (ansible_current_version.stdout_lines is defined)
 
 - debug:
-    msg: " New ansible version {{ ansible_install_version.stdout_lines }}"
-  when: (ansible_install_version.stdout_lines is defined)
+    msg: "Expected ansible version {{ ansible_expected_version.stdout_lines }}"
+  when: (ansible_expected_version.stdout_lines is defined)
 
 - fail:
-    msg: "Ansilble update failed"
-  when: (ansible_install_version.stdout_lines is not defined or
+    msg: "Ansible update failed"
+  when: (ansible_expected_version.stdout_lines is not defined or
         ansible_current_version.stdout_lines is not defined or
-        ansible_install_version.stdout_lines != ansible_current_version.stdout_lines)
+        ansible_expected_version.stdout_lines != ansible_current_version.stdout_lines)
