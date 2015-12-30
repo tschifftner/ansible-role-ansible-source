@@ -36,4 +36,7 @@ script:
   - ansible-lint tests/$SITE
 
   # check ansible version
-  - "[ $(`which ansible` --version| `which cut` -d ' ' -f2) == '2.0.0' ]"
+  - >
+    [ $(ansible --version| cut -d ' ' -f2) == '1.9.4' ]
+    && (echo "Ansible version $(ansible --version| cut -d ' ' -f2): pass" && exit 0)
+    || (echo "Ansible version $(ansible --version| cut -d ' ' -f2): fail" && exit 1)
