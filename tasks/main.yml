@@ -1,51 +1,10 @@
 ---
-- name: 'Get ansible version'
-  shell: ansible --version| cut -d ' ' -f2
-  register: ansible_current_version
-  ignore_errors: true
-  changed_when: false
+- name: 'Install git'
+  apt:
+    name: 'git'
+    state: 'latest'
 
-- name: 'Install required packages'
-  apt: name="{{ item }}" state=present update_cache=yes cache_valid_time=86400
-  with_items: ansible_required_packages
-
-- name: 'Run pip install'
-  pip: name="{{ item }}"
-  with_items: ansible_pip_install
-
-- name: '/etc/ansible exists'
-  file:
-    path: "/etc/ansible"
-    state: "directory"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-
-- name: 'Install from git repository'
-  include: 'git.yml'
-  when: ansible_download_mode == 'git'
-
-- name: 'Install from tar archive'
-  include: 'tar.yml'
-  when: ansible_download_mode == 'tar'
-
-- name: 'Update ansible version veriable'
-  shell: ansible --version| cut -d ' ' -f2
-  register: ansible_current_version
-  ignore_errors: true
-  changed_when: false
-
-# Some testing
-- debug:
-    msg: "Current ansible version {{ ansible_current_version.stdout_lines }}"
-  when: (ansible_current_version.stdout_lines is defined)
-
-- debug:
-    msg: "Expected ansible version {{ ansible_expected_version.stdout_lines }}"
-  when: (ansible_expected_version.stdout_lines is defined)
-
-- fail:
-    msg: "Ansible update failed"
-  when: (ansible_expected_version.stdout_lines is not defined or
-        ansible_current_version.stdout_lines is not defined or
-        ansible_expected_version.stdout_lines != ansible_current_version.stdout_lines)
+- name: 'Install ansible with pip'
+  pip:
+    name: 'git+{{ ansible_repo_url }}@{{ ansible_git_version }}#egg=ansible'
+    state: latest
