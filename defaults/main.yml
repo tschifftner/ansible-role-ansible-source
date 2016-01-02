@@ -1,5 +1,5 @@
 ---
 # git version
 # This can be the full 40-character SHA-1 hash, the literal string HEAD, a branch name, or a tag name.
-ansible_git_version: "stable-2.0"
+ansible_git_version: "v1.8.4"
 ansible_repo_url: "git://github.com/ansible/ansible.git"

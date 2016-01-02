@@ -8,3 +8,5 @@
   pip:
     name: 'git+{{ ansible_repo_url }}@{{ ansible_git_version }}#egg=ansible'
     state: latest
+    virtualenv: "{{ ansible_virtualenv | default(omit) }}"
+  changed_when: false #required as of a bug in ansible < 2.0 final

@@ -46,5 +46,6 @@ script:
 
 after_failure:
   - which ansible
+  - sudo find / -name "ansible"
   - ansible --version
   - ansible -i 127.0.0.1, -m setup all -c local
