@@ -46,6 +46,6 @@ script:
 
 after_failure:
   - which ansible
-  - sudo find / -name "ansible"
+  - files=`sudo find / -type f -name "ansible"`; for f in $files; do $f --version; done
   - ansible --version
   - ansible -i 127.0.0.1, -m setup all -c local

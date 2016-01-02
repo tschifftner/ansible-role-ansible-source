@@ -2,5 +2,8 @@
 - hosts: localhost
   remote_user: root
 
+  vars:
+    ansible_virtualenv: '/home/travis/virtualenv/python2.7.10'
+
   roles:
     - ansible-role-ansible-source
