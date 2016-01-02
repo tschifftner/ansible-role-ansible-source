@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
   remote_user: root
-  vars:
-    ansible_download_mode: 'git'
+
   roles:
     - ansible-role-ansible-source

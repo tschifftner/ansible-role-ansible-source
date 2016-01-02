@@ -2,20 +2,18 @@
 language: python
 python: "2.7"
 sudo: required
+dist: trusty
 
 env:
-  - SITE=test-tar.yml
-  - SITE=test-git.yml
+  - SITE=test.yml ANSIBLE_VERSION=1.8
+  - SITE=test.yml ANSIBLE_VERSION=1.9.4
 
 before_install:
   - sudo apt-get update -qq
 
 install:
   # Install Ansible.
-  - pip install ansible
-
-  # install older vesion for testing
-  #- "pip install --upgrade markupsafe jinja2 ansible==1.8.4"
+  - pip install ansible==$ANSIBLE_VERSION
 
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
@@ -45,3 +43,8 @@ script:
     [ $(ansible --version| cut -d ' ' -f2) == '2.0.0' ]
     && (echo "Ansible version $(ansible --version| cut -d ' ' -f2): pass" && exit 0)
     || (echo "Ansible version $(ansible --version| cut -d ' ' -f2): fail" && exit 1)
+
+after_failure:
+  - which ansible
+  - ansible --version
+  - ansible -i 127.0.0.1, -m setup all -c local
