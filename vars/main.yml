@@ -1,0 +1,5 @@
+---
+ansible_source_apt_packages:
+  - python-pip
+  - python-dev
+  - build-essential

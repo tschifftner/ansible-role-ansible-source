@@ -1,12 +1,39 @@
 ---
-- name: 'Install git'
-  apt:
-    name: 'git'
-    state: 'latest'
+- set_fact:
+    ansible_current_version: ''
 
-- name: 'Install ansible with pip'
-  pip:
-    name: 'git+{{ ansible_repo_url }}@{{ ansible_git_version }}#egg=ansible'
+# Install
+- name: 'Get ansible version'
+  shell: ansible --version| cut -d ' ' -f2
+  register: ansible_current_version_output
+  ignore_errors: true
+  changed_when: false
+
+- set_fact:
+    ansible_current_version: "{{ ansible_current_version_output.stdout }}"
+  when: ansible_current_version_output.stdout is defined
+
+- debug:
+    msg: 'Current ansible version: {{ ansible_current_version }}'
+- debug:
+    msg: 'Expected ansible version: {{ ansible_source_version }}'
+
+- name: Ensure latest pip is installed
+  apt:
+    pkg: "{{ item }}"
     state: latest
-    virtualenv: "{{ ansible_virtualenv | default(omit) }}"
-  changed_when: false #required as of a bug in ansible < 2.0 final
+  with_items: ansible_source_apt_packages
+  when: ansible_source_version != ansible_current_version
+
+- pip:
+    name: '{{ ansible_source_download_url }}'
+  when: ansible_source_version != ansible_current_version
+
+- name: 'Get new ansible version'
+  shell: ansible --version| cut -d ' ' -f2
+  register: ansible_current_version_output
+  ignore_errors: true
+  changed_when: false
+
+- debug:
+    msg: 'Current ansible version: {{ ansible_current_version_output.stdout }}'
